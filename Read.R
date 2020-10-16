@@ -44,7 +44,7 @@ cambodia$Q27HS <- as.numeric(cambodia$Q27HS)
 cambodia$Q21HP <- str_remove_all(cambodia$Q21HP, "[abc]")
 cambodia$Q21HP <- as.numeric(cambodia$Q21HP)
 
-##############cambodia 
+##############cambodia ##
 
 cambodia$Q1FM <- as.numeric(cambodia$Q1FM)
 cambodia$Q2FM <- as.numeric(cambodia$Q2FM)
