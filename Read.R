@@ -47,7 +47,7 @@ max_pp_cat <- data.frame("group" = c("Farm Management", "Preplanting", "Water Us
                                                  sum(echte_punten[echte_punten$column %like% "LR",]$max_points)))
 
 
-cambodia_punten <- data.frame("FM"= sum(select(cambodia, contains("FM"))))
+cambodia_punten <- data.frame("FM_punten"= c(sum(as.numeric(cambodia$Q1FM), cambodia$Q2FM, cambodia$Q3FM)))
 
 sum(echte_punten$max_points)
 sum(echte_punten[echte_punten$column %like% "FM",]$max_points)
@@ -56,5 +56,6 @@ c(sum(select(cambodia, contains("FM"))))
 cambodia[, grepl("FM", names(cambodia))]
 
 for(i in nrow(cambodia)){
-  sum(cambodia[, grepl("FM", names(cambodia))][i,])
+  new_row <- data.frame("FM_punten"= c(sum(as.numeric(cambodia$Q1FM[i,]), cambodia$Q2FM[i,], cambodia$Q3FM[i,])))
 }
+
