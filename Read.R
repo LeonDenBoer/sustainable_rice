@@ -35,7 +35,9 @@ spain$Q10dWU <- str_remove_all(spain$Q10dWU, "[NA ]")
 india$Q10dWU <- str_remove_all(india$Q10dWU, "[NA ]")
 cambodia$Q10dWU <- str_remove_all(cambodia$Q10dWU, "[NA ]")
 pakistan$Q10dWU <- str_remove_all(pakistan$Q10dWU, "[NA ]")
-
+cambodia$Q9PP <- str_remove_all(cambodia$Q9PP, "[abc]")
+cambodia[is.na(cambodia)] <- 0
+cambodia <- replace_na(list(x = 0, y = "unknown"))
 
 echte_punten <- data.frame("column" = c("Q1FM","Q2FM","Q3FM","Q4PP","Q5PP","Q6PP","Q7PP","Q8bPP","Q9PP","Q10dWU","Q11WU","Q12WU","Q13WU","Q14WU","Q15NM","Q16NM","Q17NM","Q18-1PM","Q18-2PM","Q18-3PM","Q18-4PM","Q18-5PM","Q18-6PM",
                                         "Q19HP","Q20HP","Q21HP","Q22HP","Q23HP","Q24HP","Q25HP","Q26HS","Q27HS","Q28HS","Q29HS","Q30HS","Q31HS","Q32HS","Q33HS","Q34HS","Q35LR","Q35LR","Q36LR","Q37LR","Q38LR","Q39LR","Q40LR",
@@ -55,7 +57,21 @@ c(sum(select(cambodia, contains("FM"))))
        
 cambodia[, grepl("FM", names(cambodia))]
 
-for(i in nrow(cambodia)){
-  new_row <- data.frame("FM_punten"= c(sum(as.numeric(cambodia$Q1FM[i,]), cambodia$Q2FM[i,], cambodia$Q3FM[i,])))
+for(i in 1:nrow(cambodia)){
+  row <- cambodia[i,]
+  new_row <- data.frame("FM_punten"= c(sum(row$Q1FM, row$Q2FM, row$Q3FM), "FM_procenten" = c(100 * sum(as.numeric(row$Q1FM), row$Q2FM, row$Q3FM) / sum(echte_punten[echte_punten$column %like% "FM",]$max_points)),
+                        "PP_punten" = c(sum(row$Q4PP, row$Q5PP, row$Q6PP, row$Q7PP, row$Q8PP, row$Q9PP)), "PP_procenten" = c(100 * sum(row$Q4PP, row$Q5PP, row$Q6PP, row$Q7PP, row$Q8PP, row$Q9PP) / sum(echte_punten[echte_punten$column %like% "PP",]$max_points))))
 }
 
+for (i in 1:nrow(cleanTweets_disney)){
+  row <- cleanTweets_disney[i,]
+  sentiment <- select(analyzeSentiment(row$text), "SentimentGI", "NegativityGI", "PositivityGI")
+  
+  new_row <- cbind(row, sentiment)
+  disney_sentiment2 <- rbind(disney_sentiment2, new_row, deparse.level = 1)
+  
+  if(i %% 100 == 0){
+    cat(i)
+    cat("..")
+  }
+}
